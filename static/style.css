@@ -1,0 +1,56 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+}
+
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    margin-bottom: 20px;
+}
+
+.card-header {
+    font-weight: bold;
+    background-color: #f8f9fa;
+}
+
+.form-control-lg {
+    font-size: 1.25rem;
+}
+
+.barcode-output {
+    font-family: monospace;
+    white-space: pre-wrap;
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 5px;
+    min-height: 200px;
+}
+
+.status-valid {
+    color: green;
+    font-weight: bold;
+}
+
+.status-invalid {
+    color: red;
+    font-weight: bold;
+}
+
+.status-new {
+    color: blue;
+    font-weight: bold;
+}
+
+.table th, .table td {
+    vertical-align: middle;
+}
+
+#statusText {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.action-buttons .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сканер паллет</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid">
+        <h1 class="text-center my-4">Сканер паллет</h1>
+        
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="pallets-tab" data-bs-toggle="tab" data-bs-target="#pallets" type="button">Паллеты</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="barcode-tab" data-bs-toggle="tab" data-bs-target="#barcode" type="button">Баркод</button>
+            </li>
+        </ul>
+        
+        <div class="tab-content" id="myTabContent">
+            <!-- Вкладка Паллеты -->
+            <div class="tab-pane fade show active" id="pallets" role="tabpanel">
+                <div class="row mt-3">
+                    <div class="col-md-8">
+                        <div class="input-group mb-3">
+                            <input type="text" id="searchInput" class="form-control form-control-lg" placeholder="Введите данные...">
+                            <button class="btn btn-primary" type="button" id="searchBtn">Поиск</button>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex justify-content-end">
+                            <button class="btn btn-success me-2" id="validBtn">Актуально</button>
+                            <button class="btn btn-danger me-2" id="invalidBtn">Неактуально</button>
+                            <button class="btn btn-info me-2" id="addBtn">Добавить</button>
+                            <button class="btn btn-warning me-2" id="clearBtn">Очистить</button>
+                            <button class="btn btn-primary" id="saveBtn">Сохранить</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span id="statusText">Готов к работе</span>
+                                <div>
+                                    <button class="btn btn-sm btn-outline-secondary" id="loadDataBtn">Загрузить данные</button>
+                                    <input type="file" id="fileInput" style="display: none;" accept=".xlsx,.xls,.csv">
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th><input type="checkbox" id="selectAll"></th>
+                                                <th>Место</th>
+                                                <th>Паллет</th>
+                                                <th>Штрих-код</th>
+                                                <th>Статус</th>
+                                                <th>Дата</th>
+                                                <th>Кол-во ШК</th>
+                                                <th>Действия</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="resultsTable">
+                                            <!-- Результаты будут здесь -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Вкладка Баркод -->
+            <div class="tab-pane fade" id="barcode" role="tabpanel">
+                <div class="row mt-3">
+                    <div class="col-md-8">
+                        <div class="input-group mb-3">
+                            <input type="text" id="barcodeInput" class="form-control form-control-lg" placeholder="Сканируйте ШК...">
+                            <button class="btn btn-primary" type="button" id="scanBarcodeBtn">Сканировать</button>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-secondary float-end" id="loadBarcodeDataBtn">Загрузить таблицу</button>
+                        <input type="file" id="barcodeFileInput" style="display: none;" accept=".xlsx,.xls,.csv">
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">Результаты сканирования</div>
+                            <div class="card-body">
+                                <div id="barcodeOutput" class="barcode-output">
+                                    <!-- Результаты сканирования будут здесь -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно для добавления записи -->
+    <div class="modal fade" id="addRecordModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Добавить запись</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addRecordForm">
+                        <div class="mb-3">
+                            <label for="placeCod" class="form-label">Код места (place_cod)</label>
+                            <input type="text" class="form-control" id="placeCod" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="placeName" class="form-label">Название места (place_name)</label>
+                            <input type="text" class="form-control" id="placeName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="pallet" class="form-label">Номер паллета</label>
+                            <input type="text" class="form-control" id="pallet" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="barcode" class="form-label">Штрих-код</label>
+                            <input type="text" class="form-control" id="barcode" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="count" class="form-label">Количество ШК</label>
+                            <input type="text" class="form-control" id="count" value="0">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="button" class="btn btn-primary" id="saveRecordBtn">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно для отметки неактуальности -->
+    <div class="modal fade" id="invalidModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Причина неактуальности</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="invalidForm">
+                        <div class="mb-3">
+                            <label for="reason" class="form-label">Укажите причину:</label>
+                            <input type="text" class="form-control" id="reason" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="barcodeCount" class="form-label">Количество ШК:</label>
+                            <input type="text" class="form-control" id="barcodeCount">
+                        </div>
+                        <input type="hidden" id="currentRecordId">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="button" class="btn btn-primary" id="saveInvalidBtn">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/static/script.js"></script>
+</body>
+</html>
