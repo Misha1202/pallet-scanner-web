@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Сканер паллет (Веб-версия)</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Сканер паллет</h1>
+        
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Введите номер паллета/места...">
+            <button id="searchBtn">Поиск</button>
+        </div>
+        
+        <div id="statusBar"></div>
+        
+        <div class="results-table">
+            <table id="resultsTable">
+                <thead>
+                    <tr>
+                        <th>Место</th>
+                        <th>Паллет</th>
+                        <th>Штрих-код</th>
+                        <th>Статус</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        
+        <div class="actions">
+            <button id="downloadBtn">Скачать отчет</button>
+        </div>
+    </div>
+
+    <div id="reasonModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Укажите причину</h3>
+            <input type="text" id="reasonInput" placeholder="Причина...">
+            <button id="confirmReason">Подтвердить</button>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
